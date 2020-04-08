@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/id_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="아이디 : "
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/password_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_edittext"
+        android:layout_margin="12dp"
+        android:text="비밀번호 : "
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/id_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/id_textview"
+        android:hint="좌석 번호를 입력해 주세요." />
+
+    <EditText
+        android:id="@+id/password_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_edittext"
+        android:layout_toRightOf="@id/password_textview"
+        android:hint="비밀 번호를 입력해 주세요." />
+</RelativeLayout>
