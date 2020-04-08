@@ -21,14 +21,33 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         Button button = findViewById(R.id.go_room1_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), seatActivity.class);
-                startActivity(intent);
-            }
-        });
+        Button button2 = findViewById(R.id.go_room1_button2);
+        Button button3 = findViewById(R.id.go_room1_button3);
+        Button[] buttons = new Button[3];
+        buttons[0] = button;
+        buttons[1] = button2;
+        buttons[2] = button3;
+        for (int i = 0; i < 3; i++) {
+            final int finalI = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), seatActivity.class);
+                    intent.putExtra("room_number", finalI);
+                    startActivity(intent);
+                }
+            });
+//        }
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), seatActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+        }
     }
+
     @Override
     public void onBackPressed() {//뒤로가기 버튼 클릭시 종료
         backPressCloseHandler.onBackPressed();
