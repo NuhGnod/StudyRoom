@@ -35,4 +35,12 @@
         android:layout_below="@id/id_edittext"
         android:layout_toRightOf="@id/password_textview"
         android:hint="비밀 번호를 입력해 주세요." />
+
+    <CheckBox
+        android:layout_toRightOf="@+id/password_edittext"
+        android:layout_below="@id/password_edittext"
+        android:id="@+id/checkbox"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
 </RelativeLayout>

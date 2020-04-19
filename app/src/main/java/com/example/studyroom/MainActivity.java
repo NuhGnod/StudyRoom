@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,7 +35,6 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
-    static Handler handler = new Handler();
     private static String TAG = "DataBase";
 
     @Override
@@ -38,32 +42,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-//
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            // Name, email address, and profile photo Url
-//            String name = user.getDisplayName();
-//            String email = user.getEmail();
-//            Uri photoUrl = user.getPhotoUrl();
-//
-//            // Check if user's email is verified
-//            boolean emailVerified = user.isEmailVerified();
-//
-//            // The user's ID, unique to the Firebase project. Do NOT use this value to
-//            // authenticate with your backend server, if you have one. Use
-//            // FirebaseUser.getIdToken() instead.
-//            String uid = user.getUid();
-//        }
-        // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
-
+        CollectionReference colRef = db.collection("citieas");
+        if(colRef != null){
+            Log.d(TAG, "not null");
+        }else{
+            Log.d(TAG, "null");
+        }
+        Log.d(TAG, colRef.getId());
         Map<String, Object> city = new HashMap<>();
         city.put("name", "Los Angeles");
         city.put("state", "CA");
         city.put("country", "USA");
+        Map<String, Object> home = new HashMap<>();
 
-        db.collection("cities").document("LA")
+        db.collection("citiess").document("LA")
                 .set(city)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -77,7 +71,37 @@ public class MainActivity extends AppCompatActivity {
                         Log.w(TAG, "Error writing document", e);
                     }
                 });
-
+        db.collection("home").document("namwon")
+                .set(home)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+        final DocumentReference docRef = db.collection("cities").document("LA");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data name : " + document.get("name"));
+                        Log.d(TAG, "DocumentSnapshot data : " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
 
         Button button = findViewById(R.id.go_room1_button);
         Button button2 = findViewById(R.id.go_room1_button2);
@@ -99,6 +123,15 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
+        Button logout = findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences login = getSharedPreferences("auto", MODE_PRIVATE);
+                SharedPreferences.Editor editor = login.edit();
+                editor.clear().commit();
+            }
+        });
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.studyroom;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -16,9 +17,19 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                SplashActivity.this.finish();
+                SharedPreferences login = getSharedPreferences("auto", MODE_PRIVATE);
+                boolean isAuto = false;
+                isAuto = login.getBoolean("auto", false);
+                if (isAuto) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    SplashActivity.this.finish();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    SplashActivity.this.finish();
+                }
+
             }
         }, 1000);
     }
