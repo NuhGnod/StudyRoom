@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -17,12 +21,21 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static String TAG = "DataBase";
     static String userID;
+    CheckBox checkBox;
+    String id;
+    String pw;
+    Button login_button;
+    TextView edittext_id;
+    TextView edittext_pw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +43,11 @@ public class LoginActivity extends AppCompatActivity {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
+        edittext_id = findViewById(R.id.id_edittext);
+        edittext_pw = findViewById(R.id.password_edittext);
+        id = edittext_id.getText().toString();
+        pw = edittext_pw.getText().toString();
+        login_button = findViewById(R.id.login_button);
 
         Map<String, Object> city = new HashMap<>();
         city.put("name", "Los Angeles");
@@ -84,17 +102,40 @@ public class LoginActivity extends AppCompatActivity {
         });
         boolean isAuto = false;
 
-        CheckBox checkBox = findViewById(R.id.checkbox);
+        checkBox = findViewById(R.id.checkbox);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"Check Box was clicked");
-                SharedPreferences preferences = getSharedPreferences("auto", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("auto",true).commit();
+
+                if (checkBox.isChecked()) {
+                    Log.d(TAG, "check box was clicked");
+                    SharedPreferences preferences = getSharedPreferences("auto", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("auto", true).commit();
+                } else {
+
+                }
+            }
+        });
+        login_button.setClickable(false);
+        edittext_id.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d(TAG, "변하고있음");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-
     }
+
+
 }
