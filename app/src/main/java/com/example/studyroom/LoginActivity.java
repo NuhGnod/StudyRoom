@@ -3,6 +3,7 @@ package com.example.studyroom;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login_button;
     TextView edittext_id;
     TextView edittext_pw;
+    TextView create_account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         id = edittext_id.getText().toString();
         pw = edittext_pw.getText().toString();
         login_button = findViewById(R.id.login_button);
-
+        create_account = findViewById(R.id.create_account_textview);
         Map<String, Object> city = new HashMap<>();
         city.put("name", "Los Angeles");
         city.put("state", "CA");
@@ -131,6 +133,15 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
+            }
+        });
+        create_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "create_account_button was clicked");
+                Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+                startActivity(intent);
 
             }
         });

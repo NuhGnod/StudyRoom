@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
+        android:text="회원가입 정보"
+        android:textSize="28dp" />
+
+    <EditText
+        android:id="@+id/create_account_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="아이디" />
+
+    <EditText
+        android:id="@+id/create_account_pw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="비밀번호"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/check_pw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="비밀번호 확인"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/nickname"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="닉네임" />
+
+    <LinearLayout
+        android:id="@+id/create_account_next_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/next_textview_on_create_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:text="다음"
+            android:textSize="24dp" />
+
+        <ImageView
+            android:id="@+id/next_image_on_create_account"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/next_image" />
+    </LinearLayout>
+</LinearLayout>
