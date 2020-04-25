@@ -1,5 +1,6 @@
 package com.example.studyroom;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -10,10 +11,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CreateAccountActivity extends AppCompatActivity {
     LinearLayout nextLayout;
@@ -22,7 +30,10 @@ public class CreateAccountActivity extends AppCompatActivity {
     EditText pw_edittext;
     EditText check_pw_edittext;
     EditText nickname_edittext;
+    Button check_id;
     private String TAG = "StudyRoom";
+    FirebaseFirestore db;
+    Boolean complete = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -35,7 +46,41 @@ public class CreateAccountActivity extends AppCompatActivity {
         pw_edittext = findViewById(R.id.create_account_pw);
         check_pw_edittext = findViewById(R.id.check_pw);
         nickname_edittext = findViewById(R.id.nickname);
+        db = FirebaseFirestore.getInstance();
+        check_id = findViewById(R.id.check_id);
+        check_id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                String userID = id_edittext.getText().toString();
+                Log.d(TAG, "userID : " + userID);
+                if (!userID.equals("")) {
+                    final DocumentReference docRef = db.collection("users").document(userID);//user컬렉션에서 id_edittext.getText().toString() 란 문서를 참조한다.
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {//이미 있는 아이디
+                                    Toast.makeText(getApplicationContext(), "이미 존재하는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "이미 존재하는 아이디입니다.");
+                                    complete = false;
+                                } else {//없는 아이디, 사용 가능
+                                    Toast.makeText(getApplicationContext(), "사용 가능한 아이디입니다.", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "사용가능한 아이디입니다.");
+                                    complete = true;
+                                }
+                            } else {//실패
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
+                }
+                if (userID.equals(""))
+                    Toast.makeText(getApplicationContext(), "아이디를 입력해주세요.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         nextLayout.setOnTouchListener(new View.OnTouchListener() {
 
             @Override

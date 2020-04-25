@@ -87,7 +87,6 @@
         android:text="비밀번호 찾기" />
 
     <Button
-
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -95,7 +94,7 @@
         android:layout_marginLeft="21dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="21dp"
-        android:clickable="true"
+
         android:gravity="center"
         android:text="로그인" />
 
