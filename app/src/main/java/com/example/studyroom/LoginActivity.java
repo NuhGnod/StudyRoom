@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.w(TAG, "Error writing document", e);
                     }
                 });
-//        final DocumentReference docRef = db.collection("users").document("A2");
+//        final DocumentReference docRef = db.collection("Users").document("A2");
 //        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //            @Override
 //            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final DocumentReference docRef = db.collection("users").document(id);//user컬렉션에서 id_edittext.getText().toString() 란 문서를 참조한다.
+                final DocumentReference docRef = db.collection("Users").document(id);//user컬렉션에서 id_edittext.getText().toString() 란 문서를 참조한다.
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {

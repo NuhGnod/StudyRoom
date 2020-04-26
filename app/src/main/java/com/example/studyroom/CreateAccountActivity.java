@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,6 +33,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     EditText check_pw_edittext;
     EditText nickname_edittext;
     Button check_id;
+    EditText userName_edittext;
+    EditText userNumber_edittext;
     private String TAG = "StudyRoom";
     FirebaseFirestore db;
     Boolean complete = false;
@@ -47,11 +51,12 @@ public class CreateAccountActivity extends AppCompatActivity {
         check_pw_edittext = findViewById(R.id.check_pw);
         nickname_edittext = findViewById(R.id.nickname);
         db = FirebaseFirestore.getInstance();
+        userName_edittext = findViewById(R.id.userName);
+        userNumber_edittext = findViewById(R.id.userNumber);
         check_id = findViewById(R.id.check_id);
         check_id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String userID = id_edittext.getText().toString();
                 Log.d(TAG, "userID : " + userID);
                 if (!userID.equals("")) {
@@ -87,30 +92,41 @@ public class CreateAccountActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 Log.d(TAG, "touched");
                 int action = event.getAction();
-
+                String id = id_edittext.getText().toString();
+                String pw = pw_edittext.getText().toString();
+                String nickname = nickname_edittext.getText().toString();
+                String userName = userName_edittext.getText().toString();
+                String userNumber = userNumber_edittext.getText().toString();
                 if (action == MotionEvent.ACTION_DOWN) {
                     nextTextview.setTextColor(Color.RED);
                 }
                 if (action == MotionEvent.ACTION_UP) {
                     nextTextview.setTextColor(Color.DKGRAY);
 
-                    if (id_edittext.getText().toString().length() == 0) {
+                    if (id.length() == 0) {
                         Toast.makeText(CreateAccountActivity.this, "아이디를 입력해주세요.", Toast.LENGTH_LONG).show();
                         return false;
                     }
-                    if (pw_edittext.getText().toString().length() == 0) {
+                    if (pw.length() == 0) {
                         Toast.makeText(CreateAccountActivity.this, "비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show();
                         return false;
                     }
-                    if (nickname_edittext.getText().toString().length() == 0) {
+                    if (nickname.length() == 0) {
                         Toast.makeText(CreateAccountActivity.this, "닉네임을 입력해주세요.", Toast.LENGTH_LONG).show();
                         return false;
                     }
-                    if (!pw_edittext.getText().toString().equals(check_pw_edittext.getText().toString())) {
+                    if (!pw.equals(check_pw_edittext.getText().toString())) {
                         Toast.makeText(CreateAccountActivity.this, "비밀번호가 맞지 않습니다. 다시 입력해주세요.", Toast.LENGTH_LONG).show();
                         check_pw_edittext.setText("");
                         return false;
                     }
+                    Users users = new Users(id,pw,userName, userNumber);
+                    db.collection("users").document(id).set(users);
+
+                    SharedPreferences preferences = getSharedPreferences("name", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("name", userName);
+
                     Intent intent = new Intent(CreateAccountActivity.this, LoginActivity.class);
                     startActivity(intent);
                     CreateAccountActivity.this.finish();

@@ -14,11 +14,38 @@
         android:text="회원가입 정보"
         android:textSize="28dp" />
 
-    <LinearLayout
-        android:weightSum="10"
+    <EditText
+        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="이름"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/userNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="핸드폰 번호"
+        android:inputType="phone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginTop="8dp"
+        android:background="#C5C5C5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10">
 
         <EditText
             android:id="@+id/create_account_id"
@@ -30,17 +57,18 @@
             android:layout_weight="7"
             android:background="@drawable/login_edittext_border_layout"
             android:hint="아이디" />
+
         <Button
-            android:layout_marginTop="3dp"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:id="@+id/check_id"
-            android:layout_marginRight="21dp"
-            android:background="@color/white"
-            android:layout_weight="3"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
-            android:text="중복 확인"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="21dp"
+            android:layout_weight="3"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="중복 확인" />
     </LinearLayout>
 
     <EditText
