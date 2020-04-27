@@ -31,8 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity {
+    private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
+
     private static String TAG = "DataBase";
-    static String userID;
     CheckBox checkBox;
     String id;
     String pw;
@@ -60,39 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         create_account = findViewById(R.id.create_account_textview);
         login_button.setClickable(false);
         set = new HashSet();
-        Map<String, Object> city = new HashMap<>();
-        city.put("name", "Los Angeles");
-        city.put("state", "CA");
-        city.put("country", "USA");
-        Map<String, Object> home = new HashMap<>();
-        db.collection("citiess").document("LA")
-                .set(city)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
-        db.collection("home").document("namwon")
-                .set(home)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
+
 //        final DocumentReference docRef = db.collection("Users").document("A2");
 //        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //            @Override
@@ -193,7 +162,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
-
+    @Override
+    public void onBackPressed() {//뒤로가기 버튼 클릭시 종료
+        backPressCloseHandler.onBackPressed();
+    }
     public void login_click() {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
