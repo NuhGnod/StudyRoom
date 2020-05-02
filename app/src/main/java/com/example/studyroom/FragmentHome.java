@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.readystatesoftware.viewbadger.BadgeView;
+
 //import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentHome extends Fragment {
@@ -59,6 +61,10 @@ public class FragmentHome extends Fragment {
                 getActivity().finish();
             }
         });
+        View target = rootview.findViewById(R.id.button3);
+        BadgeView badgeView = new BadgeView(getActivity().getApplicationContext(), target);
+        badgeView.setText("1");
+        badgeView.show();
         return rootview;
     }
 }

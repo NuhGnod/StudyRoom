@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.readystatesoftware.viewbadger.BadgeView;
 
 import org.w3c.dom.Text;
 
@@ -61,6 +62,10 @@ public class LoginActivity extends AppCompatActivity {
         create_account = findViewById(R.id.create_account_textview);
         login_button.setClickable(false);
         set = new HashSet();
+//        View target = findViewById(R.id.login_button);
+//        BadgeView badgeView = new BadgeView(this, target);
+//        badgeView.setText("1");
+//        badgeView.show();
 
 //        final DocumentReference docRef = db.collection("Users").document("A2");
 //        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

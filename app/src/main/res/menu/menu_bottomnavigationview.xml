@@ -3,17 +3,17 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/home_black"
-        android:title="Home" />
+        android:title="홈" />
     <item
         android:id="@+id/searchItem"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="Search" />
+        android:title="검색" />
     <item
-        android:id="@+id/cameraItem"
-        android:icon="@android:drawable/ic_menu_camera"
-        android:title="Camera" />
+        android:id="@+id/chat"
+        android:icon="@drawable/kakaotalk_chat"
+        android:title="메시지" />
     <item
-        android:id="@+id/callItem"
-        android:icon="@android:drawable/ic_menu_call"
-        android:title="Call" />
+        android:id="@+id/my_page"
+        android:icon="@drawable/my_page"
+        android:title="마이페이지" />
 </menu>

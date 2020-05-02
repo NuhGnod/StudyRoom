@@ -1,5 +1,6 @@
 package com.example.studyroom;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FragmentCall extends Fragment {
+public class FragmentChat extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_call, container, false);
+        ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
+
+
+
+
+        return rootview;
     }
 }
