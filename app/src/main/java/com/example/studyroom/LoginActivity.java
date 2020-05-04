@@ -1,6 +1,7 @@
 package com.example.studyroom;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,7 +22,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.readystatesoftware.viewbadger.BadgeView;
 
 import org.w3c.dom.Text;
@@ -176,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final DocumentReference docRef = db.collection("Users").document(id);//user컬렉션에서 id_edittext.getText().toString() 란 문서를 참조한다.
+                final DocumentReference docRef = db.collection("users").document(id);//user컬렉션에서 id_edittext.getText().toString() 란 문서를 참조한다.
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -207,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+
 
             }
         });

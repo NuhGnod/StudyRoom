@@ -48,15 +48,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
 
-//        chat_data : internal storage cache
-//        사용자 입장 : 관리자와 만 채팅
-//        채팅 fragment - 채팅방 목록 불필요 - 관리자 와 1ㄷ1 채팅
-//        관리자와의 채팅방의 이름으로 내부 저장소에 채팅 기록 파일로 변환해 저장
 
-//        관리자 입장 : 모든 사용자와 채팅
-//        채팅 fragement - 채팅방 목록 필요 - 모든 사용자와의 방 생성
-//        각 채팅방 별로 내부 저장소에 폴더를 생성 후, 채팅 기록을을 저장
-//
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
 
@@ -65,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference myReference= database.getReference("message");
 
         myReference.setValue("Hello, World!!");
+
 
     }
 //        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
