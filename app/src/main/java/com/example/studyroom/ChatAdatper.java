@@ -5,49 +5,75 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ChatAdatper extends BaseAdapter {
-    private Context context;
-    private int layout;
-    private ArrayList<ChatData> chatData;
-    private LayoutInflater inflater;
-    private String id;
+public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> {
+    private List<ChatData> mDataset;
+    private String myNickName;
+
+    public ChatAdatper(List<ChatData> mDataset, Context context, String myNickName) {
+        this.mDataset = mDataset;
+        this.myNickName = myNickName;
+    }
 
 
-    public ChatAdatper(Context context, int list, ArrayList<ChatData> arr, String id) {
-        this.context = context;
-        this.layout = list;
-        this.chatData = arr;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.id = id;
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item, parent, false);
+        MyViewHolder vh = new MyViewHolder(v);
+        return vh;
 
     }
 
     @Override
-    public int getCount() {
-        return chatData.size();
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        ChatData chatData = this.mDataset.get(position);
+        holder.name.setText(chatData.getNickname());
+        holder.msg.setText(chatData.getContent());
+
+        if (chatData.getNickname().equals(this.myNickName)) {
+            holder.name.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            holder.msg.setTextAlignment((View.TEXT_ALIGNMENT_TEXT_END));
+        } else {
+            holder.msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holder.name.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        }
     }
 
     @Override
-    public Object getItem(int position) {
-        return chatData.get(position);
+    public int getItemCount() {
+        return mDataset == null ? 0 : mDataset.size();
+
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public ChatData getChat(int position) {
+        return mDataset != null ? mDataset.get(position) : null;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            holder = new ViewHolder();
-            holder.name = convertView.findViewById()
+    public void addChat(ChatData chatData) {
+        mDataset.add(chatData);
+        notifyItemChanged(mDataset.size() - 1);
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView msg;
+        public TextView time;
+        public TextView name;
+
+        public MyViewHolder(@NonNull View itemView) {
+
+            super(itemView);
+            name = itemView.findViewById(R.id.nickname_chat_iem);
+            msg = itemView.findViewById(R.id.chat_content_chat_item);
+            time = itemView.findViewById(R.id.chat_cur_time_chat_item);
         }
     }
 }
