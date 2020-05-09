@@ -6,10 +6,15 @@ class ChatData {
     private String content;
     private String time;
 
-    public ChatData() {
+    public ChatData(String nickname, String content, String time) {
+        this.nickname = nickname;
+        this.content = content;
+        this.time = time;
     }
 
+    public ChatData() {
 
+    }
 
     public String getNickname() {
         return nickname;
@@ -22,7 +27,6 @@ class ChatData {
     public String getTime() {
         return time;
     }
-
 
 
     public void setNickname(String nickname) {

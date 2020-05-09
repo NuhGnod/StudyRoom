@@ -1,3 +1,12 @@
+SharedPreferences :
+    user - id,pw,nickname
+    auto - auto_login_checkBox_boolean
+    name - userName
+
+FireStore :
+    chat (collection) -> userName (doc) -> message (collection) -> chat_content (random id, doc) -> content, nickname, time (field)
+
+    users (collection) -> ID (doc) -> userID, userPW, userNumber, userName, userNickName (field)
 
 하단 탭 - 홈, 채팅, 마이페이지, ***
 

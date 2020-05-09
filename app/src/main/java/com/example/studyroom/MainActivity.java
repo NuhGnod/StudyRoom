@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
     private static final String CHANNEL_ID = "channel_1";
@@ -32,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private FragmentChat fragmentChat;
     private FragmentMyPage fragmentMyPage;
     private FragmentHome fragmentHome;
+    private FirebaseFirestore db;
     NotificationManager mNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       db = FirebaseFirestore.getInstance();
 
         fragmentManager = getSupportFragmentManager();
         fragmentSearch = new FragmentSearch();

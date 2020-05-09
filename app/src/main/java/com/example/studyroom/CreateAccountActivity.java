@@ -94,7 +94,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 int action = event.getAction();
                 String id = id_edittext.getText().toString();
                 String pw = pw_edittext.getText().toString();
-                String nickname = nickname_edittext.getText().toString();
+                String userNickName = nickname_edittext.getText().toString();
                 String userName = userName_edittext.getText().toString();
                 String userNumber = userNumber_edittext.getText().toString();
                 if (action == MotionEvent.ACTION_DOWN) {
@@ -111,7 +111,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         Toast.makeText(CreateAccountActivity.this, "비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show();
                         return false;
                     }
-                    if (nickname.length() == 0) {
+                    if (userNickName.length() == 0) {
                         Toast.makeText(CreateAccountActivity.this, "닉네임을 입력해주세요.", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -120,7 +120,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                         check_pw_edittext.setText("");
                         return false;
                     }
-                    Users users = new Users(id,pw,userName, userNumber);
+                    Users users = new Users(id,pw,userName, userNumber, userNickName);
+
                     db.collection("users").document(id).set(users);
 
                     SharedPreferences preferences = getSharedPreferences("name", MODE_PRIVATE);

@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     boolean id_count = false;
     boolean pw_count = false;
     FirebaseFirestore db;
-    Set<String> set;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         login_button = findViewById(R.id.login_button);
         create_account = findViewById(R.id.create_account_textview);
         login_button.setClickable(false);
-        set = new HashSet();
+
 //        View target = findViewById(R.id.login_button);
 //        BadgeView badgeView = new BadgeView(this, target);
 //        badgeView.setText("1");
@@ -96,12 +95,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkBox.isChecked()) {
-                    Log.d(TAG, "check box was clicked");
+//                    Log.d(TAG, "check box was clicked");
                     SharedPreferences preferences = getSharedPreferences("auto", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("auto", true).commit();
                 } else {
-                    Log.d(TAG, "check bax was not clickced");
+//                    Log.d(TAG, "check bax was not clickced");
                 }
             }
         });
@@ -113,18 +112,19 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG, "pw 변하고있음");
-                Log.d(TAG, "CharSequence : " + s);
+//                Log.d(TAG, "pw 변하고있음");
+//                Log.d(TAG, "CharSequence : " + s);
                 if (s.length() > 0)
                     pw_count = true;
                 else
                     pw_count = false;
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (id_count && pw_count) {
                     login_button.setClickable(true);
-                    Log.d(TAG,"login_button is clickable");
+//                    Log.d(TAG,"login_button is clickable");
                     login_click();
                 } else login_button.setClickable(false);
 
@@ -140,8 +140,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG, "id 변하고있음");
-                Log.d(TAG, "CharSequence : " + s);
+//                Log.d(TAG, "id 변하고있음");
+//                Log.d(TAG, "CharSequence : " + s);
                 if (s.length() > 0) id_count = true;
                 else
                     id_count = false;
@@ -155,7 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else
                     login_button.setClickable(false);
                 id = edittext_id.getText().toString();
-                Log.d(TAG, "clickable : " + login_button.isClickable());
+//                Log.d(TAG, "clickable : " + login_button.isClickable());
             }
         });
         create_account.setOnClickListener(new View.OnClickListener() {
@@ -170,10 +170,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     public void onBackPressed() {//뒤로가기 버튼 클릭시 종료
         backPressCloseHandler.onBackPressed();
     }
+
     public void login_click() {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,14 +189,18 @@ public class LoginActivity extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {//올바른 아이디
                                 if (id.equals(document.get("userID")) && pw.equals(document.get("userPW"))) {
+                                    String NickName = document.get("userNickName").toString();
                                     Log.d(TAG, "아이디와 비밀번호가 일치합니다.");
-                                    if (checkBox.isChecked()) {
-                                        set.add(id);//id
-                                        set.add(pw);//pw
-                                        SharedPreferences preferences = getSharedPreferences("user", MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = preferences.edit();
-                                        editor.putStringSet("user", set);
-                                    }
+                                    SharedPreferences pref = getSharedPreferences("userID", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.putString("userID", id);
+                                    pref = getSharedPreferences("userPW", MODE_PRIVATE);
+                                    editor = pref.edit();
+                                    editor.putString("userPW", pw);
+                                    pref = getSharedPreferences("userNickName", MODE_PRIVATE);
+                                    editor = pref.edit();
+                                    editor.putString("userNickName", NickName);
+                                    editor.commit();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     LoginActivity.this.finish();

@@ -5,12 +5,21 @@ public class Users {
     private String userPW;
     private String userName;
     private String userNumber;
-
-    public Users(String id, String pw, String name, String number) {
+    private String userNickName;
+    public Users(String id, String pw, String name, String number, String nickname) {
         this.userID = id;
         this.userPW = pw;
         this.userName = name;
         this.userNumber = number;
+        this.userNickName = nickname;
+    }
+
+    public String getUserNickName() {
+        return userNickName;
+    }
+
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
     }
 
     public String getUserID() {

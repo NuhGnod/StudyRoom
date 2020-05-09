@@ -1,6 +1,8 @@
 package com.example.studyroom;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FragmentChat extends Fragment {
 
@@ -33,8 +37,8 @@ public class FragmentChat extends Fragment {
     public RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ChatData> chatDataList;
-    private String nickname = "nick2";
-    private String TAG = "chat";
+    private String nickname;
+    private String TAG = "chatchatchat";
     private EditText editText_chat;
     private Button button_send;
     private FirebaseFirestore db;
@@ -44,7 +48,10 @@ public class FragmentChat extends Fragment {
         button_send = rootview.findViewById(R.id.send_message_button);
         editText_chat = rootview.findViewById(R.id.message_edittext);
         db = FirebaseFirestore.getInstance();
+        chatDataList = new ArrayList<>();
 
+        SharedPreferences pref = getActivity().getSharedPreferences("userNickName", Context.MODE_PRIVATE);
+        nickname = pref.getString("userNickName", null);
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +61,10 @@ public class FragmentChat extends Fragment {
                     chatData.setNickname(nickname);
                     chatData.setContent(msg);
                     db.collection("chat").document(nickname).collection("message").document().set(chatData);
-
+//                    chatDataList.add(chatData);
+                    ((ChatAdatper) mAdapter).addChat(chatData);
+                    mAdapter.notifyDataSetChanged();
+                    editText_chat.setText("");
                 }
             }
         });
@@ -63,7 +73,6 @@ public class FragmentChat extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        chatDataList = new ArrayList<>();
         mAdapter = new ChatAdatper(chatDataList, getActivity().getApplicationContext(), nickname);
         mRecyclerView.setAdapter(mAdapter);
 
