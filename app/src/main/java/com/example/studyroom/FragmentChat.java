@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -42,14 +47,13 @@ public class FragmentChat extends Fragment {
     private EditText editText_chat;
     private Button button_send;
     private FirebaseFirestore db;
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
+        ViewGroup viewGroup2 = (ViewGroup) inflater.inflate(R.layout.activity_main, container, false);
         button_send = rootview.findViewById(R.id.send_message_button);
         editText_chat = rootview.findViewById(R.id.message_edittext);
         db = FirebaseFirestore.getInstance();
         chatDataList = new ArrayList<>();
-
         SharedPreferences pref = getActivity().getSharedPreferences("userNickName", Context.MODE_PRIVATE);
         nickname = pref.getString("userNickName", null);
         button_send.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +65,6 @@ public class FragmentChat extends Fragment {
                     chatData.setNickname(nickname);
                     chatData.setContent(msg);
                     db.collection("chat").document(nickname).collection("message").document().set(chatData);
-//                    chatDataList.add(chatData);
                     ((ChatAdatper) mAdapter).addChat(chatData);
                     mAdapter.notifyDataSetChanged();
                     editText_chat.setText("");
@@ -78,4 +81,6 @@ public class FragmentChat extends Fragment {
 
         return rootview;
     }
+
+
 }

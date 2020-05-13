@@ -10,10 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> {
     private List<ChatData> mDataset;
@@ -30,7 +32,7 @@ public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> 
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
 

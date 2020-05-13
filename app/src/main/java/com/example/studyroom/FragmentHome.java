@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +26,10 @@ public class FragmentHome extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
-
+        SharedPreferences pref = getActivity().getSharedPreferences("userNickName", Context.MODE_PRIVATE);
+        String name = pref.getString("userNickName",null);
+        TextView tv = rootview.findViewById(R.id.home);
+        tv.setText(name + "!#@#");
         Button button = rootview.findViewById(R.id.go_room1_button);
         Button button2 = rootview.findViewById(R.id.go_room1_button2);
         Button button3 = rootview.findViewById(R.id.go_room1_button3);

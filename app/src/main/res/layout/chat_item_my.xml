@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="right"
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/Big_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="6dp"
         android:gravity="right"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintRight_toLeftOf="@id/user_img_chat_item"
+
+
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/nickname_chat_iem"
@@ -23,7 +30,6 @@
             android:textSize="16dp" />
 
         <LinearLayout
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -32,19 +38,22 @@
                 android:id="@+id/chat_cur_time_chat_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:gravity="right"
+                android:layout_gravity="bottom"
                 android:text="오후 11:22"
-                android:textSize="16dp" />
+                android:textSize="12dp" />
 
             <TextView
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:id="@+id/chat_content_chat_item"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_marginLeft="8dp"
-                android:gravity="right"
+                android:background="@drawable/chat_my_yellow"
                 android:text="PhoneNumber@@@@@"
-                android:textSize="16dp" />
+                android:textSize="21dp" />
 
 
         </LinearLayout>
@@ -53,14 +62,15 @@
     </LinearLayout>
 
     <ImageView
-
         android:id="@+id/user_img_chat_item"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_margin="6dp"
         android:src="@mipmap/ic_launcher_round"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

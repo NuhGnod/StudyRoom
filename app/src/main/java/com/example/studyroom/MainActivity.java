@@ -2,7 +2,9 @@ package com.example.studyroom;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -13,83 +15,90 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
 public class MainActivity extends AppCompatActivity {
-    private static final String CHANNEL_ID = "channel_1";
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
-    private static String TAG = "DataBase";
+    private static String TAG = "MainActivity_TAG";
     private FragmentManager fragmentManager;
     private FragmentSearch fragmentSearch;
     private FragmentChat fragmentChat;
     private FragmentMyPage fragmentMyPage;
     private FragmentHome fragmentHome;
     private FirebaseFirestore db;
-    NotificationManager mNotificationManager;
+    private BottomNavigationView bottomNavigationView;
+    private ConstraintLayout layout;
+    private int curID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       db = FirebaseFirestore.getInstance();
-
+        db = FirebaseFirestore.getInstance();
+        layout = findViewById(R.id.constraintLayout_main);
         fragmentManager = getSupportFragmentManager();
-        fragmentSearch = new FragmentSearch();
-        fragmentChat = new FragmentChat();
-        fragmentMyPage = new FragmentMyPage();
         fragmentHome = new FragmentHome();
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
 
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
+        bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
+        bottomNavigationView.getOrCreateBadge(R.id.chat).setNumber(1);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myReference= database.getReference("message");
+        DatabaseReference myReference = database.getReference("message");
 
         myReference.setValue("Hello, World!!");
+        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (curID == R.id.chat) {
+                    int mRootViewHeight = layout.getRootView().getHeight();
+                    int mRelativeWrapperHeight = layout.getHeight();
+                    int mDiff = mRootViewHeight - mRelativeWrapperHeight;
 
+                    if (mDiff > dpTOPx(200)) {
+//                        Toast.makeText(getApplicationContext(), "키보드가 위로 올라왔습니다.", Toast.LENGTH_LONG).show();
+                        bottomNavigationView.setVisibility(View.GONE);
+                    } else {
+//                            Toast.makeText(getApplicationContext(), "키보드가 내려갔습니다.", Toast.LENGTH_LONG).show();
+                            bottomNavigationView.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            }
+        });
 
     }
-//        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        createNotificationChannel();
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
-//        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        int requestID = (int) System.currentTimeMillis();
-//        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        builder.setContentTitle("Title")
-//                .setContentText("Content").
-//                setDefaults(Notification.DEFAULT_ALL).
-//                setAutoCancel(true).
-//                setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-//                .setSmallIcon(android.R.drawable.btn_star)
-//                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.my_page))
-//                .setContentIntent(pendingIntent);
-//
-//    }
-//
-//    private void createNotificationChannel() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            CharSequence name = getString(R.string.common_google_play_services_notification_channel_name);
-//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-//            mNotificationManager.createNotificationChannel(channel);
-//        }
-//    }
 
+
+    private float dpTOPx(float i) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, metrics);
+    }
 
     @Override
     public void onBackPressed() {//뒤로가기 버튼 클릭시 종료
@@ -97,24 +106,66 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+        public void bottomNavigationHide(BottomNavigationView view) {
+
+        }
+
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-
+            curID = menuItem.getItemId();
             switch (menuItem.getItemId()) {
                 case R.id.home:
-                    transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
+                    if (fragmentHome == null) {
+                        fragmentHome = new FragmentHome();
+                        transaction.add(R.id.frameLayout, fragmentHome);
+                    }
+                    if (fragmentHome != null) transaction.show(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    transaction.commit();
+
                     break;
                 case R.id.searchItem:
-                    transaction.replace(R.id.frameLayout, fragmentSearch).commitAllowingStateLoss();
+                    if (fragmentSearch == null) {
+                        fragmentSearch = new FragmentSearch();
+                        transaction.add(R.id.frameLayout, fragmentSearch);
+                    }
+                    if (fragmentSearch != null) transaction.show(fragmentSearch);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    transaction.commit();
+
                     break;
                 case R.id.chat:
-                    transaction.replace(R.id.frameLayout, fragmentChat).commitAllowingStateLoss();
+                    if (fragmentChat == null) {
+                        fragmentChat = new FragmentChat();
+                        transaction.add(R.id.frameLayout, fragmentChat);
+                    }
+                    if (fragmentChat != null) transaction.show(fragmentChat);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    transaction.commit();
+
                     break;
                 case R.id.my_page:
-                    transaction.replace(R.id.frameLayout, fragmentMyPage).commitAllowingStateLoss();
+                    if (fragmentMyPage == null) {
+                        fragmentMyPage = new FragmentMyPage();
+                        transaction.add(R.id.frameLayout, fragmentMyPage);
+                    }
+                    if (fragmentMyPage != null) transaction.show(fragmentMyPage);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    transaction.commit();
+
                     break;
             }
+
             return true;
         }
     }
