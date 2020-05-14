@@ -40,19 +40,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:text="오후 11:22"
-                android:textSize="12dp" />
+                android:textSize="14dp" />
 
             <TextView
-                android:paddingRight="12dp"
-                android:paddingLeft="12dp"
-                android:gravity="center"
-                android:layout_gravity="center"
                 android:id="@+id/chat_content_chat_item"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/chat_my_yellow"
-                android:text="PhoneNumber@@@@@"
+                android:ellipsize="none"
+                android:gravity="center"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:scrollHorizontally="false"
+                android:singleLine="false"
                 android:textSize="21dp" />
 
 

@@ -31,7 +31,9 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,13 +45,14 @@ public class FragmentChat extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ChatData> chatDataList;
     private String nickname;
-    private String TAG = "chatchatchat";
+    private String TAG = "FragmentChat_TAG";
     private EditText editText_chat;
     private Button button_send;
     private FirebaseFirestore db;
+    private String curTime;
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
-        ViewGroup viewGroup2 = (ViewGroup) inflater.inflate(R.layout.activity_main, container, false);
         button_send = rootview.findViewById(R.id.send_message_button);
         editText_chat = rootview.findViewById(R.id.message_edittext);
         db = FirebaseFirestore.getInstance();
@@ -60,14 +63,25 @@ public class FragmentChat extends Fragment {
             @Override
             public void onClick(View v) {
                 String msg = editText_chat.getText().toString();
+                SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss");
+                curTime = SDF.format(new Date(System.currentTimeMillis()));
+                String chat_time;
+                Log.d(TAG, "msg : " + msg);
                 if (msg != null) {
                     ChatData chatData = new ChatData();
                     chatData.setNickname(nickname);
                     chatData.setContent(msg);
-                    db.collection("chat").document(nickname).collection("message").document().set(chatData);
+                    chatData.setTime(curTime);
+                    chat_time = curTime.substring(11,18);
+                    chatData.setChat_time(chat_time);
+
+                    Log.d(TAG, "chat_time : " + chat_time);
+                    db.collection("chat").document(nickname).collection("message").document(curTime).set(chatData);
                     ((ChatAdatper) mAdapter).addChat(chatData);
                     mAdapter.notifyDataSetChanged();
                     editText_chat.setText("");
+                    Log.d(TAG, "chatDataList is : " + chatDataList.get(0).getTime());
+
                 }
             }
         });
@@ -75,8 +89,9 @@ public class FragmentChat extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+//        Log.d(TAG, "curTime : "+curTime);
 
-        mAdapter = new ChatAdatper(chatDataList, getActivity().getApplicationContext(), nickname);
+        mAdapter = new ChatAdatper(chatDataList, getActivity().getApplicationContext(), nickname, curTime);
         mRecyclerView.setAdapter(mAdapter);
 
         return rootview;

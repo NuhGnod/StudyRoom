@@ -107,10 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
     class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-        public void bottomNavigationHide(BottomNavigationView view) {
-
-        }
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();

@@ -19,10 +19,15 @@
         android:orientation="vertical">
 
         <TextView
-
+            android:ellipsize="none"
+            android:singleLine="false"
+            android:layout_weight="1"
+            android:scrollHorizontally="false"
+            android:inputType="textMultiLine"
             android:id="@+id/nickname_chat_iem"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:minLines="2"
+            android:layout_height="0dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="쫀떡궁합입맛"
@@ -44,7 +49,7 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:layout_marginLeft="6dp"
                 android:id="@+id/chat_cur_time_chat_item"
                 android:layout_width="wrap_content"

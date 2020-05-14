@@ -20,11 +20,13 @@ import java.util.zip.Inflater;
 public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> {
     private List<ChatData> mDataset;
     private String myNickName;
-    private String TAG = "ChatAdapterDebug";
+    private String TAG = "ChatAdapter_TAG";
+    private String time;
 
-    public ChatAdatper(List<ChatData> mDataset, Context context, String myNickName) {
+    public ChatAdatper(List<ChatData> mDataset, Context context, String myNickName, String time) {
         this.mDataset = mDataset;
         this.myNickName = myNickName;
+        this.time = time;
     }
 
 
@@ -42,28 +44,34 @@ public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> 
     public int getItemViewType(int position) {
         ChatData chatData = this.mDataset.get(position);
         if (chatData.getNickname().equals(this.myNickName)) {
-             return R.layout.chat_item_my;//내가 보내는 메시지
+            return R.layout.chat_item_my;//내가 보내는 메시지
         } else {
             return R.layout.chat_item;//상대방이 보내는 메시지
-        }    }
+        }
+    }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ChatData chatData = this.mDataset.get(position);
-        Log.d(TAG,"mDataset .size()" + mDataset.size());
-        Log.d(TAG, "position : " + position);
+//        Log.d(TAG, "mDataset .size()" + mDataset.size());
+//        Log.d(TAG, "position : " + position);
         holder.name.setText(chatData.getNickname());
         holder.msg.setText(chatData.getContent());
-        Log.d(TAG, "chatData.getNickname() ; " + chatData.getNickname());
-        Log.d(TAG, "chatAdapter.getNickname() ; " + myNickName);
+        holder.time.setText(chatData.getChat_time());
+        Log.d(TAG, "time ; " + time);
+//        Log.d(TAG, "chatData.getNickname() ; " + chatData.getNickname());
+//        Log.d(TAG, "chatAdapter.getNickname() ; " + myNickName);
 
         if (chatData.getNickname().equals(this.myNickName)) {
             holder.name.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             holder.msg.setTextAlignment((View.TEXT_ALIGNMENT_TEXT_END));
+            holder.time.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             Log.d(TAG, "where : " + "if is true");
         } else {
             holder.msg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
             holder.name.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holder.time.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
             Log.d(TAG, "where : " + "if is false");
 
         }
