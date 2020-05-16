@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <ImageView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/user_img_chat_item"
         android:layout_width="42dp"
         android:layout_height="42dp"
@@ -13,51 +17,59 @@
         android:src="@mipmap/ic_launcher_round" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/Big_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_margin="6dp"
+        android:layout_marginTop="32dp"
+        android:gravity="left"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/user_img_chat_item"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:ellipsize="none"
-            android:singleLine="false"
-            android:layout_weight="1"
-            android:scrollHorizontally="false"
-            android:inputType="textMultiLine"
             android:id="@+id/nickname_chat_iem"
             android:layout_width="wrap_content"
-            android:minLines="2"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:gravity="right"
             android:text="쫀떡궁합입맛"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16dp" />
 
         <LinearLayout
 
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:background="@drawable/chat_white"
                 android:id="@+id/chat_content_chat_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
-                android:text="PhoneNumber@@@@@"
-                android:textSize="16dp" />
-
+                android:ellipsize="none"
+                android:gravity="center"
+                android:background="@color/white"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:scrollHorizontally="false"
+                android:singleLine="false"
+                android:textSize="21dp" />
             <TextView
-                android:textSize="14dp"
-                android:layout_marginLeft="6dp"
                 android:id="@+id/chat_cur_time_chat_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오후 11:22" />
+                android:layout_gravity="bottom"
+                android:text="오후 11:22"
+                android:textSize="14dp" />
 
         </LinearLayout>
 
 
     </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

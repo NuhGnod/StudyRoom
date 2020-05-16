@@ -14,8 +14,6 @@
         android:gravity="right"
         android:orientation="vertical"
         app:layout_constraintRight_toLeftOf="@id/user_img_chat_item"
-
-
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

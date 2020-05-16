@@ -15,7 +15,20 @@ FireStore :
         -> 결제 후 해당 좌석은 빨간 좌석으로 표시
 
 
-채팅 탭 - 사용자 - 관리자와 1ㄷ1채팅
+채팅 탭 -
+        firestore 에 관하여:
+        chat 컬렉션의 하위 문서의 id 는 고객의 nickname이다.
+        message 컬렉션의 각 문서는 serverTimestamp 의 시간을 id로 하여 저장된다. -> 정렬된다.
+        각 문서의 field 는 content , nickname, serverTimestamp, user_send_time 등이 있다.
+
+        서버가 데이터를 수신한 시간은 전 세계 어디에서 보내나 동일 하므로 최근 데이터가 무엇인지 알 수 있다.
+
+        각 사용자가 메시지를 보내는 시간은 위치해 있는 장소에 따라 다르므로 (또는 핸드폰의 시간)
+        발신자는 user_send_time 을 통해 채팅창에 시간을 표시한다.
+        수신자는 서버에서 데이터를 받아오는 그 시간을 기준으로 핸드폰의 시간을 채팅창에 시간으로 표시한다.
+
+
+        사용자 - 관리자와 1ㄷ1채팅
 
         메시지를 보내면 firestore의 chat컬렉션에 사용자의 id를 이름으로 가진 문서(각 채팅방의 이름에 해당) 에 message란 컬렉션(컬렉션ID = withAdmin 으로 고정)을 만들고, 이 컬렉션의 문서에 chat data를 저장한다.
         chat data들이 저장되는 문서의 field값은 보낸 메시지, id, 보낸 시간, imageId 등이 있다.

@@ -15,6 +15,11 @@ class ChatData {
         this.chat_time = chat_time;
     }
 
+    public ChatData(String nickname, String content, String chat_time){
+        this.nickname = nickname;
+        this.content = content;
+        this.chat_time = chat_time;
+    }
     public String getChat_time() {
         return chat_time;
     }
