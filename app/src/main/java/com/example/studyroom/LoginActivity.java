@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView edittext_id;
     TextView edittext_pw;
     TextView create_account;
+    TextView find_id;
+    TextView find_pw;
     boolean id_count = false;
     boolean pw_count = false;
     FirebaseFirestore db;
@@ -63,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         login_button = findViewById(R.id.login_button);
         create_account = findViewById(R.id.create_account_textview);
         login_button.setClickable(false);
-
+        find_id = findViewById(R.id.find_id_textview);
+        find_pw = findViewById(R.id.find_pw_textview);
 //        View target = findViewById(R.id.login_button);
 //        BadgeView badgeView = new BadgeView(this, target);
 //        badgeView.setText("1");
@@ -169,6 +172,13 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void clickFindTextview(int id) {
+        if (id == R.id.find_id_textview) {
+            
+        } else if (id == R.id.find_pw_textview) {
+        }
     }
 
     @Override

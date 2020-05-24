@@ -1,7 +1,9 @@
 package com.example.studyroom;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -50,11 +53,14 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private ConstraintLayout layout;
     private int curID;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
         db = FirebaseFirestore.getInstance();
         layout = findViewById(R.id.constraintLayout_main);
         fragmentManager = getSupportFragmentManager();
@@ -66,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
         bottomNavigationView.getOrCreateBadge(R.id.chat).setNumber(1);
-
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myReference = database.getReference("message");
@@ -85,13 +90,18 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigationView.setVisibility(View.GONE);
                     } else {
 //                            Toast.makeText(getApplicationContext(), "키보드가 내려갔습니다.", Toast.LENGTH_LONG).show();
-                            bottomNavigationView.setVisibility(View.VISIBLE);
+                        bottomNavigationView.setVisibility(View.VISIBLE);
 
                     }
                 }
             }
         });
 
+    }
+
+    private void setActionBar(Toolbar toolbar) {
+        CustomActionBar ca = new CustomActionBar(this, getSupportActionBar());
+        
     }
 
 

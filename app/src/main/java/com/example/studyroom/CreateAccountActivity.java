@@ -44,6 +44,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+
         nextLayout = findViewById(R.id.create_account_next_layout);
         nextTextview = findViewById(R.id.next_textview_on_create_account);
         id_edittext = findViewById(R.id.create_account_id);
