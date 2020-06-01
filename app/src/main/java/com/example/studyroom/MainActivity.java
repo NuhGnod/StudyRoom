@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String token = task.getResult().getToken();
                 Log.d(TAG, "FCM 토큰 : " + token);
-                Log.d(TAG, "FCM 토큰 : " + token);
+//              push -> commit -> add
 
                 Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
 
