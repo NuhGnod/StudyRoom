@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,11 +63,12 @@ public class FragmentChat extends Fragment {
     private FirebaseFirestore db;
     private String curTime;
     private CollectionReference colRef;
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
         button_send = rootview.findViewById(R.id.send_message_button);
         editText_chat = rootview.findViewById(R.id.message_edittext);
+
+
         db = FirebaseFirestore.getInstance();
         chatDataList = new ArrayList<>();
         SharedPreferences pref = getActivity().getSharedPreferences("userNickName", Context.MODE_PRIVATE);//해당 기기의 로그인된 아이디의 닉네임을 가져온다.
@@ -128,9 +130,8 @@ public class FragmentChat extends Fragment {
                 String nickname_Q;
                 String chat_time_Q;
                 String content_Q;
-
+                Log.d(TAG,"Error : " + queryDocumentSnapshots.getDocuments());
                 if (e != null) {
-
                 }
                 if (queryDocumentSnapshots != null && queryDocumentSnapshots.isEmpty() == false) {
 

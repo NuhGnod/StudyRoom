@@ -6,12 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/include_toolbar"
-        layout="@layout/activity_custom_action_bar" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_below="@id/include_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintLeft_toLeftOf="parent"

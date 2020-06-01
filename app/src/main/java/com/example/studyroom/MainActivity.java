@@ -32,12 +32,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -54,17 +56,19 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout layout;
     private int curID;
     private Toolbar toolbar;
+    private CollectionReference colRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+
         db = FirebaseFirestore.getInstance();
         layout = findViewById(R.id.constraintLayout_main);
         fragmentManager = getSupportFragmentManager();
         fragmentHome = new FragmentHome();
+        toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
@@ -99,11 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setActionBar(Toolbar toolbar) {
-        CustomActionBar ca = new CustomActionBar(this, getSupportActionBar());
-        
-    }
-
 
     private float dpTOPx(float i) {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -124,13 +123,18 @@ public class MainActivity extends AppCompatActivity {
             switch (menuItem.getItemId()) {
                 case R.id.home:
                     if (fragmentHome == null) {
+
+
                         fragmentHome = new FragmentHome();
                         transaction.add(R.id.frameLayout, fragmentHome);
                     }
+
                     if (fragmentHome != null) transaction.show(fragmentHome);
                     if (fragmentSearch != null) transaction.hide(fragmentSearch);
                     if (fragmentChat != null) transaction.hide(fragmentChat);
                     if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    getSupportActionBar().setDisplayShowTitleEnabled(true);
+                    getSupportActionBar().setTitle("Fragment Home");
                     transaction.commit();
 
                     break;

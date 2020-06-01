@@ -12,10 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".CustomActionBar"
-            android:label="@string/title_activity_custom_action_bar"
-            android:theme="@style/AppTheme"></activity>
         <activity android:name=".FindIdActivity"
             android:theme="@style/FindIdTheme"/>
         <activity android:name=".CreateAccountActivity" />
