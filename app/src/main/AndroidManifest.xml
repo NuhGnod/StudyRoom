@@ -30,6 +30,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".seatActivity" />
+
         <service
             android:name="MyFireBaseMessagingService"
             android:exported="false">

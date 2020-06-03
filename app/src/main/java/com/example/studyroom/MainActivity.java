@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout layout;
     private int curID;
     private Toolbar toolbar;
-    private CollectionReference colRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +72,74 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome = new FragmentHome();
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            curID = extras.getInt("curID");
+            Log.d(TAG, "curID : " + curID);
+            Log.d(TAG, "time : " + System.currentTimeMillis() + "##1");
+            switch (curID) {
+                case R.id.chat:
+                    if (fragmentChat == null) {
+                        fragmentChat = new FragmentChat();
+                        transaction.add(R.id.frameLayout, fragmentChat);
+                    }
+                    if (fragmentChat != null) transaction.show(fragmentChat);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    transaction.commit();
+                    break;
+                case R.id.searchItem:
+                    if (fragmentSearch == null) {
+                        fragmentSearch = new FragmentSearch();
+                        transaction.add(R.id.frameLayout, fragmentSearch);
+                    }
+                    if (fragmentSearch != null) transaction.show(fragmentSearch);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    transaction.commit();
+
+                    break;
+                case R.id.my_page:
+                    if (fragmentMyPage == null) {
+                        fragmentMyPage = new FragmentMyPage();
+                        transaction.add(R.id.frameLayout, fragmentMyPage);
+                    }
+                    if (fragmentMyPage != null) transaction.show(fragmentMyPage);
+                    if (fragmentHome != null) transaction.hide(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    transaction.commit();
+
+                    break;
+                default:
+                    if (fragmentHome == null) {
+                        fragmentHome = new FragmentHome();
+                        transaction.add(R.id.frameLayout, fragmentHome);
+                    }
+                    if (fragmentHome != null) transaction.show(fragmentHome);
+                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                    if (fragmentChat != null) transaction.hide(fragmentChat);
+                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                    getSupportActionBar().setDisplayShowTitleEnabled(true);
+                    getSupportActionBar().setTitle("Fragment Home");
+                    transaction.commit();
+
+                    break;
+            }
+        } else {
+            Log.d(TAG, "null !!");
+            Log.d(TAG, "time : " + System.currentTimeMillis() + "##2");
+            transaction.replace(R.id.frameLayout, fragmentHome);
+            transaction.commit();
+
+        }
+
+
+//        transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
 
         bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
@@ -108,11 +172,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if(!task.isSuccessful()){
+                if (!task.isSuccessful()) {
                     Log.w(TAG, "getInstanceId failed", task.getException());
 
                 }
                 String token = task.getResult().getToken();
+                Log.d(TAG, "time : " + System.currentTimeMillis() + "##3");
+
                 Log.d(TAG, "FCM 토큰 : " + token);
 //              push -> commit -> add
 
@@ -139,16 +205,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
+            Log.d(TAG, "ItemSelectedListener before : " + curID);
             curID = menuItem.getItemId();
-            switch (menuItem.getItemId()) {
+            Log.d(TAG, "ItemSelectedListener after : " + curID);
+            switch (curID) {
                 case R.id.home:
                     if (fragmentHome == null) {
-
-
                         fragmentHome = new FragmentHome();
                         transaction.add(R.id.frameLayout, fragmentHome);
                     }
-
                     if (fragmentHome != null) transaction.show(fragmentHome);
                     if (fragmentSearch != null) transaction.hide(fragmentSearch);
                     if (fragmentChat != null) transaction.hide(fragmentChat);
