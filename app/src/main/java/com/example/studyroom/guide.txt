@@ -1,5 +1,5 @@
 SharedPreferences :
-    user - id,pw,nickname
+    userID, userPW, userNickName
     auto - auto_login_checkBox_boolean
     name - userName
 

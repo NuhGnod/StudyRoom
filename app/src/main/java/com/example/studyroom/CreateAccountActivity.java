@@ -98,6 +98,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 String userNickName = nickname_edittext.getText().toString();
                 String userName = userName_edittext.getText().toString();
                 String userNumber = userNumber_edittext.getText().toString();
+                String token = "";
                 if (action == MotionEvent.ACTION_DOWN) {
                     nextTextview.setTextColor(Color.RED);
                 }
@@ -121,7 +122,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         check_pw_edittext.setText("");
                         return false;
                     }
-                    Users users = new Users(id,pw,userName, userNumber, userNickName);
+                    Users users = new Users(id,pw,userName, userNumber, userNickName, token);
 
                     db.collection("users").document(id).set(users);
 

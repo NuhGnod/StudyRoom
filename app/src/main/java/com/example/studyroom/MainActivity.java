@@ -16,6 +16,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.media.Ringtone;
@@ -42,6 +43,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout layout;
     private int curID;
     private Toolbar toolbar;
+    private String token;
+    private CollectionReference colRef;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome = new FragmentHome();
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             curID = extras.getInt("curID");
@@ -137,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
 
         }
-
-
 //        transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
 
         bottomNavigationView = findViewById(R.id.navigationView);
@@ -169,20 +173,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SharedPreferences pref = getSharedPreferences("userID", Context.MODE_PRIVATE);
+         userID = pref.getString("userID", null);
+
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "getInstanceId failed", task.getException());
-
                 }
-                String token = task.getResult().getToken();
-                Log.d(TAG, "time : " + System.currentTimeMillis() + "##3");
 
+                token = task.getResult().getToken();
                 Log.d(TAG, "FCM 토큰 : " + token);
-//              push -> commit -> add
-
+                Log.d(TAG, "FCM 토큰 : " + token);
+                Intent intent = getIntent();
+                Log.d(TAG, "intent : " + intent.getIntExtra("curID", 0));
                 Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                final DocumentReference docRef = db.collection("users").document(userID);
+                docRef.update("token", token);
 
 
             }
@@ -205,15 +213,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            Log.d(TAG, "ItemSelectedListener before : " + curID);
             curID = menuItem.getItemId();
-            Log.d(TAG, "ItemSelectedListener after : " + curID);
-            switch (curID) {
+            switch (menuItem.getItemId()) {
                 case R.id.home:
                     if (fragmentHome == null) {
+
+
                         fragmentHome = new FragmentHome();
                         transaction.add(R.id.frameLayout, fragmentHome);
                     }
+
                     if (fragmentHome != null) transaction.show(fragmentHome);
                     if (fragmentSearch != null) transaction.hide(fragmentSearch);
                     if (fragmentChat != null) transaction.hide(fragmentChat);

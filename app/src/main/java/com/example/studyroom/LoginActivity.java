@@ -37,7 +37,7 @@ import java.util.Set;
 public class LoginActivity extends AppCompatActivity {
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
 
-    private static String TAG = "DataBase";
+    private static String TAG = "LoginActivity_TAG";
     CheckBox checkBox;
     String id;
     String pw;
@@ -176,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void clickFindTextview(int id) {
         if (id == R.id.find_id_textview) {
-            
+
         } else if (id == R.id.find_pw_textview) {
         }
     }
@@ -201,16 +201,34 @@ public class LoginActivity extends AppCompatActivity {
                                 if (id.equals(document.get("userID")) && pw.equals(document.get("userPW"))) {
                                     String NickName = document.get("userNickName").toString();
                                     Log.d(TAG, "아이디와 비밀번호가 일치합니다.");
+
                                     SharedPreferences pref = getSharedPreferences("userID", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = pref.edit();
                                     editor.putString("userID", id);
-                                    pref = getSharedPreferences("userPW", MODE_PRIVATE);
-                                    editor = pref.edit();
-                                    editor.putString("userPW", pw);
-                                    pref = getSharedPreferences("userNickName", MODE_PRIVATE);
-                                    editor = pref.edit();
-                                    editor.putString("userNickName", NickName);
-                                    editor.commit();
+                                    editor.apply();
+                                    SharedPreferences pref2 = getSharedPreferences("userPW", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor2 = pref2.edit();
+                                    editor2.putString("userPW", pw);
+                                    editor2.apply();
+                                    SharedPreferences pref3 = getSharedPreferences("userNickName", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor3 = pref2.edit();
+                                    editor2.putString("userNickName", NickName);
+                                    editor3.apply();
+//                                    pref = getSharedPreferences("userPW", MODE_PRIVATE);
+//                                    editor = pref.edit();
+//                                    editor.putString("userPW", pw);
+//                                    editor.apply();
+//
+//                                    pref = getSharedPreferences("userNickName", MODE_PRIVATE);
+//                                    editor = pref.edit();
+//                                    editor.putString("userNickName", NickName);
+//
+//                                    editor.apply();
+
+                                    Log.d(TAG, "userID : " + id);
+                                    Log.d(TAG, "pref : " + pref3.getString("userNickName", null));
+                                    Log.d(TAG, "pred : " + pref.getString("userID", null));
+
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     LoginActivity.this.finish();

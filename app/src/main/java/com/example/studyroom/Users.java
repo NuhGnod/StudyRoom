@@ -6,12 +6,15 @@ public class Users {
     private String userName;
     private String userNumber;
     private String userNickName;
-    public Users(String id, String pw, String name, String number, String nickname) {
+    private String token;
+
+    public Users(String id, String pw, String name, String number, String nickname, String token) {
         this.userID = id;
         this.userPW = pw;
         this.userName = name;
         this.userNumber = number;
         this.userNickName = nickname;
+        this.token = token;
     }
 
     public String getUserNickName() {
@@ -48,6 +51,14 @@ public class Users {
 
     public String getUserNumber() {
         return userNumber;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setUserNumber(String userNumber) {
