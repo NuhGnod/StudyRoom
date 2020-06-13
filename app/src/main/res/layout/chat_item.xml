@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
-                    android:background="@drawable/chat_my_yellow"
+                    android:background="@drawable/chat_white"
                     android:ellipsize="none"
                     android:gravity="center"
                     android:inputType="textMultiLine"

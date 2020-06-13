@@ -43,6 +43,8 @@ public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> 
     @Override
     public int getItemViewType(int position) {
         ChatData chatData = this.mDataset.get(position);
+        Log.d(TAG, "nickname : " + myNickName);
+        Log.d(TAG, "chatData nickname : " + chatData.getNickname());
         if (chatData.getNickname().equals(this.myNickName)) {
             return R.layout.chat_item_my;//내가 보내는 메시지
         } else {

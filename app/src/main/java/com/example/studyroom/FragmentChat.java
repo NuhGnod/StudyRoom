@@ -39,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.model.Document;
 import com.google.firebase.firestore.model.value.TimestampValue;
 
 import java.text.SimpleDateFormat;
@@ -63,6 +64,8 @@ public class FragmentChat extends Fragment {
     private FirebaseFirestore db;
     private String curTime;
     private CollectionReference colRef;
+    private DocumentReference docRef;
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
         button_send = rootview.findViewById(R.id.send_message_button);
@@ -76,6 +79,7 @@ public class FragmentChat extends Fragment {
         Log.d(TAG, "nickname : " + my_nickname);
         //        @@@나중에 document 수정 해야함
         colRef = db.collection("chat").document("2").collection("message");
+        docRef = db.collection("chat").document("2");
 //        @@@나중에 document "2" -> nickname 으로 수정 해야함
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,10 +91,27 @@ public class FragmentChat extends Fragment {
                 String chat_time;
 //                Log.d(TAG, "msg : " + msg);
                 if (!msg.equals("")) {
-                    ChatData chatData = new ChatData();
+                    final ChatData chatData = new ChatData();
                     chatData.setNickname(my_nickname);
                     chatData.setContent(msg);
                     chatData.setTime(curTime);
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    chatData.setRead_value(document.get("read_boolean").toString());
+                                    Log.d(TAG, "read Value : " + chatData.getRead_value());
+
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get  failed with ", task.getException());
+                            }
+                        }
+                    });
                     chat_time = curTime.substring(11, 18);
                     chatData.setChat_time(chat_time);
                     //채팅 데이터 에 담기
@@ -130,7 +151,7 @@ public class FragmentChat extends Fragment {
                 String nickname_Q;
                 String chat_time_Q;
                 String content_Q;
-                Log.d(TAG,"Error : " + queryDocumentSnapshots.getDocuments());
+                Log.d(TAG, "Error : " + queryDocumentSnapshots.getDocuments());
                 if (e != null) {
                 }
                 if (queryDocumentSnapshots != null && queryDocumentSnapshots.isEmpty() == false) {
@@ -138,11 +159,28 @@ public class FragmentChat extends Fragment {
                     nickname_Q = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1).get("nickname").toString();
                     chat_time_Q = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1).get("chat_time").toString();
                     content_Q = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1).get("content").toString();
-                    ChatData chatData = new ChatData(nickname_Q, content_Q, chat_time_Q);
+                    final String[] read_boolean_Q = {""};
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    read_boolean_Q[0] = document.get("read_boolean").toString();
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get  failed with ", task.getException());
+                            }
+                        }
+                    });
+                    ChatData chatData = new ChatData(nickname_Q, content_Q, chat_time_Q, read_boolean_Q[0]);
                     if (!nickname_Q.equals(my_nickname)) {//상대방의 chat이다.
                         Log.d(TAG, "curNickNmae : " + nickname_Q);//최신 nickname_Q 내용 수신
                         Log.d(TAG, "curChatTime : " + chat_time_Q);//최신 chat_time_Q 내용 수신
                         Log.d(TAG, "curContent : " + content_Q);//최신 content_Q 내용 수신
+                        Log.d(TAG, "readBoolean : " + read_boolean_Q[0]);
                         ((ChatAdatper) mAdapter).addChat(chatData);//어댑터 데이터 전달
                         mAdapter.notifyDataSetChanged();//업데이트
                     }

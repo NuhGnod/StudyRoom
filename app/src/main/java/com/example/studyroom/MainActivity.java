@@ -49,6 +49,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
@@ -64,15 +67,19 @@ public class MainActivity extends AppCompatActivity {
     private int curID;
     private Toolbar toolbar;
     private String token;
-    private CollectionReference colRef;
+    private DocumentReference docRef;
     private String userID;
-
+    private Map map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         db = FirebaseFirestore.getInstance();
+        map = new HashMap();
+
+        docRef = db.collection("chat").document("2");
+
         layout = findViewById(R.id.constraintLayout_main);
         fragmentManager = getSupportFragmentManager();
         fragmentHome = new FragmentHome();
@@ -230,6 +237,9 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setDisplayShowTitleEnabled(true);
                     getSupportActionBar().setTitle("Fragment Home");
                     transaction.commit();
+                    map.clear();
+                    map.put("read_boolean", "0");
+                    docRef.set(map);
 
                     break;
                 case R.id.searchItem:
@@ -242,6 +252,10 @@ public class MainActivity extends AppCompatActivity {
                     if (fragmentChat != null) transaction.hide(fragmentChat);
                     if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
                     transaction.commit();
+                    map.clear();
+                    map.put("read_boolean", "0");
+                    docRef.set(map);
+                    
 
                     break;
                 case R.id.chat:
@@ -254,7 +268,9 @@ public class MainActivity extends AppCompatActivity {
                     if (fragmentSearch != null) transaction.hide(fragmentSearch);
                     if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
                     transaction.commit();
-
+                    map.clear();
+                    map.put("read_boolean", userID);
+                    docRef.set(map);
                     break;
                 case R.id.my_page:
                     if (fragmentMyPage == null) {
@@ -266,6 +282,9 @@ public class MainActivity extends AppCompatActivity {
                     if (fragmentSearch != null) transaction.hide(fragmentSearch);
                     if (fragmentChat != null) transaction.hide(fragmentChat);
                     transaction.commit();
+                    map.clear();
+                    map.put("read_boolean", "0");
+                    docRef.set(map);
 
                     break;
             }

@@ -3,6 +3,7 @@ SharedPreferences :
     auto - auto_login_checkBox_boolean
     name - userName
 
+
 FireStore :
     chat (collection) -> userName (doc) -> message (collection) -> chat_content (random id, doc) -> content, nickname, time (field)
 

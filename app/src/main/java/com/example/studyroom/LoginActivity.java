@@ -211,8 +211,8 @@ public class LoginActivity extends AppCompatActivity {
                                     editor2.putString("userPW", pw);
                                     editor2.apply();
                                     SharedPreferences pref3 = getSharedPreferences("userNickName", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor3 = pref2.edit();
-                                    editor2.putString("userNickName", NickName);
+                                    SharedPreferences.Editor editor3 = pref3.edit();
+                                    editor3.putString("userNickName", NickName);
                                     editor3.apply();
 //                                    pref = getSharedPreferences("userPW", MODE_PRIVATE);
 //                                    editor = pref.edit();
@@ -226,8 +226,8 @@ public class LoginActivity extends AppCompatActivity {
 //                                    editor.apply();
 
                                     Log.d(TAG, "userID : " + id);
-                                    Log.d(TAG, "pref : " + pref3.getString("userNickName", null));
-                                    Log.d(TAG, "pred : " + pref.getString("userID", null));
+                                    Log.d(TAG, "pref nickname : " + pref3.getString("userNickName", null));
+                                    Log.d(TAG, "pref id : " + pref.getString("userID", null));
 
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
