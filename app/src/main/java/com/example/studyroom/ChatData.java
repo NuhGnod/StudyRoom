@@ -8,20 +8,20 @@ class ChatData {
     private String content;
     private String time;
     private String chat_time;
-    private String read_value;
-    public ChatData(String nickname, String content, String time, String chat_time, String read_value) {
+    private String read_status;
+    public ChatData(String nickname, String content, String time, String chat_time, String read_status) {
         this.nickname = nickname;
         this.content = content;
         this.time = time;
         this.chat_time = chat_time;
-        this.read_value = read_value;
+        this.read_status = read_status;
     }
 
-    public ChatData(String nickname, String content, String chat_time, String  read_value){
+    public ChatData(String nickname, String content, String chat_time, String  read_status){
         this.nickname = nickname;
         this.content = content;
         this.chat_time = chat_time;
-        this.read_value = read_value;
+        this.read_status = read_status;
     }
     public String getChat_time() {
         return chat_time;
@@ -35,12 +35,12 @@ class ChatData {
 
     }
 
-    public String getRead_value() {
-        return read_value;
+    public String getRead_status() {
+        return read_status;
     }
 
-    public void setRead_value(String  read_value) {
-        this.read_value = read_value;
+    public void setRead_status(String  read_status) {
+        this.read_status = read_status;
     }
 
     public String getNickname() {

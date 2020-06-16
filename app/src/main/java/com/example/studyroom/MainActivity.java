@@ -1,40 +1,27 @@
 package com.example.studyroom;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.RelativeLayout;
+
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,7 +36,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -70,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private DocumentReference docRef;
     private String userID;
     private Map map;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,79 +78,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            curID = extras.getInt("curID");
-            Log.d(TAG, "curID : " + curID);
-            Log.d(TAG, "time : " + System.currentTimeMillis() + "##1");
-            switch (curID) {
-                case R.id.chat:
-                    if (fragmentChat == null) {
-                        fragmentChat = new FragmentChat();
-                        transaction.add(R.id.frameLayout, fragmentChat);
-                    }
-                    if (fragmentChat != null) transaction.show(fragmentChat);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    transaction.commit();
-                    break;
-                case R.id.searchItem:
-                    if (fragmentSearch == null) {
-                        fragmentSearch = new FragmentSearch();
-                        transaction.add(R.id.frameLayout, fragmentSearch);
-                    }
-                    if (fragmentSearch != null) transaction.show(fragmentSearch);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    transaction.commit();
-
-                    break;
-                case R.id.my_page:
-                    if (fragmentMyPage == null) {
-                        fragmentMyPage = new FragmentMyPage();
-                        transaction.add(R.id.frameLayout, fragmentMyPage);
-                    }
-                    if (fragmentMyPage != null) transaction.show(fragmentMyPage);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    transaction.commit();
-
-                    break;
-                default:
-                    if (fragmentHome == null) {
-                        fragmentHome = new FragmentHome();
-                        transaction.add(R.id.frameLayout, fragmentHome);
-                    }
-                    if (fragmentHome != null) transaction.show(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    getSupportActionBar().setDisplayShowTitleEnabled(true);
-                    getSupportActionBar().setTitle("Fragment Home");
-                    transaction.commit();
-
-                    break;
-            }
-        } else {
-            Log.d(TAG, "null !!");
-            Log.d(TAG, "time : " + System.currentTimeMillis() + "##2");
-            transaction.replace(R.id.frameLayout, fragmentHome);
-            transaction.commit();
-
-        }
-//        transaction.replace(R.id.frameLayout, fragmentHome).commitAllowingStateLoss();
+        switchFragmentChat_FCM(extras, transaction);
 
         bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
         bottomNavigationView.getOrCreateBadge(R.id.chat).setNumber(1);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myReference = database.getReference("message");
-
-        myReference.setValue("Hello, World!!");
         layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -181,29 +107,136 @@ public class MainActivity extends AppCompatActivity {
         });
 
         SharedPreferences pref = getSharedPreferences("userID", Context.MODE_PRIVATE);
-         userID = pref.getString("userID", null);
+        userID = pref.getString("userID", null);
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "getInstanceId failed", task.getException());
+                } else {
+                    token = task.getResult().getToken();
+                    Intent intent = getIntent();
+                    Log.d(TAG, "intent : " + intent.getIntExtra("curID", 0));
+                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                    final DocumentReference docRef = db.collection("users").document(userID);
+                    docRef.update("token", token);
                 }
+            }
+        });
+        Log.d(TAG, "getActiveFragment : " + getActiveFragment());
+    }
 
-                token = task.getResult().getToken();
-                Log.d(TAG, "FCM 토큰 : " + token);
-                Log.d(TAG, "FCM 토큰 : " + token);
-                Intent intent = getIntent();
-                Log.d(TAG, "intent : " + intent.getIntExtra("curID", 0));
-                Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-                final DocumentReference docRef = db.collection("users").document(userID);
-                docRef.update("token", token);
+    private void getReadStatusFromFirestore() {
+        final String reading_time = "";
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.w(TAG, "getInstanceId failed", task.getException());
+                } else {
+                    if (task.getResult().get("admin") != null) {
+                        SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss:SS");
+                        reading_time = SDF.format(new Date(System.currentTimeMillis()));
+                    } else {
 
-
+                    }
+                }
             }
         });
     }
 
+    private void switchFragmentChat_FCM(Bundle extras, FragmentTransaction transaction) {
+        if (extras != null) {
+            int curID = extras.getInt("curID");
+            fragmentTransition(curID);
+        } else {
+            transaction.replace(R.id.frameLayout, fragmentHome).commit();
+
+        }
+    }
+
+    private void fragmentTransition(int curID) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        switch (curID) {
+            case R.id.home:
+                if (fragmentHome == null) {
+                    fragmentHome = new FragmentHome();
+                    transaction.add(R.id.frameLayout, fragmentHome, "fragmentHome");
+                }
+
+                if (fragmentHome != null) transaction.show(fragmentHome);
+                if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                if (fragmentChat != null) transaction.hide(fragmentChat);
+                if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+
+                transaction.addToBackStack("fragmentHome");
+                getSupportActionBar().setDisplayShowTitleEnabled(true);
+                getSupportActionBar().setTitle("Fragment Home");
+                transaction.commit();
+                map.clear();
+                map.put("read_status", "0");
+                docRef.set(map);
+
+                break;
+            case R.id.searchItem:
+
+                if (fragmentSearch == null) {
+                    fragmentSearch = new FragmentSearch();
+                    transaction.add(R.id.frameLayout, fragmentSearch, "fragmentSearch");
+                }
+                if (fragmentSearch != null) transaction.show(fragmentSearch);
+                if (fragmentHome != null) transaction.hide(fragmentHome);
+                if (fragmentChat != null) transaction.hide(fragmentChat);
+                if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                transaction.addToBackStack("fragmentSearch");
+                transaction.commit();
+                map.clear();
+                map.put("read_status", "0");
+                docRef.set(map);
+
+                break;
+            case R.id.chat:
+
+                if (fragmentChat == null) {
+                    fragmentChat = new FragmentChat();
+                    transaction.add(R.id.frameLayout, fragmentChat, "fragmentChat");
+                }
+                if (fragmentChat != null) transaction.show(fragmentChat);
+                if (fragmentHome != null) transaction.hide(fragmentHome);
+                if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
+                transaction.addToBackStack("fragmentChat");
+                transaction.commit();
+                map.clear();
+                map.put("read_status", userID);
+                docRef.set(map);
+                break;
+            case R.id.my_page:
+                if (fragmentMyPage == null) {
+                    fragmentMyPage = new FragmentMyPage();
+                    transaction.add(R.id.frameLayout, fragmentMyPage, "fragmentMyPage");
+                }
+                if (fragmentMyPage != null) transaction.show(fragmentMyPage);
+                if (fragmentHome != null) transaction.hide(fragmentHome);
+                if (fragmentSearch != null) transaction.hide(fragmentSearch);
+                if (fragmentChat != null) transaction.hide(fragmentChat);
+                transaction.addToBackStack("fragmentMyPage");
+                transaction.commit();
+                map.clear();
+                map.put("read_status", "0");
+                docRef.set(map);
+                break;
+        }
+    }
+
+    public Fragment getActiveFragment() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return null;
+        }
+        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+        return getSupportFragmentManager().findFragmentByTag(tag);
+    }
 
     private float dpTOPx(float i) {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -216,79 +249,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
             curID = menuItem.getItemId();
-            switch (menuItem.getItemId()) {
-                case R.id.home:
-                    if (fragmentHome == null) {
-
-
-                        fragmentHome = new FragmentHome();
-                        transaction.add(R.id.frameLayout, fragmentHome);
-                    }
-
-                    if (fragmentHome != null) transaction.show(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    getSupportActionBar().setDisplayShowTitleEnabled(true);
-                    getSupportActionBar().setTitle("Fragment Home");
-                    transaction.commit();
-                    map.clear();
-                    map.put("read_boolean", "0");
-                    docRef.set(map);
-
-                    break;
-                case R.id.searchItem:
-                    if (fragmentSearch == null) {
-                        fragmentSearch = new FragmentSearch();
-                        transaction.add(R.id.frameLayout, fragmentSearch);
-                    }
-                    if (fragmentSearch != null) transaction.show(fragmentSearch);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    transaction.commit();
-                    map.clear();
-                    map.put("read_boolean", "0");
-                    docRef.set(map);
-                    
-
-                    break;
-                case R.id.chat:
-                    if (fragmentChat == null) {
-                        fragmentChat = new FragmentChat();
-                        transaction.add(R.id.frameLayout, fragmentChat);
-                    }
-                    if (fragmentChat != null) transaction.show(fragmentChat);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentMyPage != null) transaction.hide(fragmentMyPage);
-                    transaction.commit();
-                    map.clear();
-                    map.put("read_boolean", userID);
-                    docRef.set(map);
-                    break;
-                case R.id.my_page:
-                    if (fragmentMyPage == null) {
-                        fragmentMyPage = new FragmentMyPage();
-                        transaction.add(R.id.frameLayout, fragmentMyPage);
-                    }
-                    if (fragmentMyPage != null) transaction.show(fragmentMyPage);
-                    if (fragmentHome != null) transaction.hide(fragmentHome);
-                    if (fragmentSearch != null) transaction.hide(fragmentSearch);
-                    if (fragmentChat != null) transaction.hide(fragmentChat);
-                    transaction.commit();
-                    map.clear();
-                    map.put("read_boolean", "0");
-                    docRef.set(map);
-
-                    break;
-            }
-
+            fragmentTransition(curID);
             return true;
         }
     }
