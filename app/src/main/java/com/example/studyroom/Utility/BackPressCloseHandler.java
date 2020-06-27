@@ -1,4 +1,4 @@
-package com.example.studyroom;
+package com.example.studyroom.Utility;
 
 import android.app.Activity;
 import android.widget.Toast;

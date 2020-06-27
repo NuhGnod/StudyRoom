@@ -1,56 +1,41 @@
-package com.example.studyroom;
+package com.example.studyroom.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.studyroom.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
-import com.google.firebase.firestore.model.Document;
-import com.google.firebase.firestore.model.value.TimestampValue;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class FragmentChat extends Fragment {
 
@@ -66,6 +51,7 @@ public class FragmentChat extends Fragment {
     private String curTime;
     private CollectionReference colRef;
     private DocumentReference docRef;
+    private String userID;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_chat, container, false);
@@ -82,6 +68,9 @@ public class FragmentChat extends Fragment {
         colRef = db.collection("chat").document("2").collection("message");
         docRef = db.collection("chat").document("2");
 //        @@@나중에 document "2" -> nickname 으로 수정 해야함
+        SharedPreferences pref1 = getActivity().getSharedPreferences("userID", Context.MODE_PRIVATE);
+        userID = pref1.getString("userID", null);
+        getChatList();
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,10 +78,10 @@ public class FragmentChat extends Fragment {
                 String msg = editText_chat.getText().toString();
                 SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss:SS");
                 curTime = SDF.format(new Date(System.currentTimeMillis()));
+                final ChatData chatData = new ChatData();
                 String chat_time;
 //                Log.d(TAG, "msg : " + msg);
                 if (!msg.equals("")) {
-                    final ChatData chatData = new ChatData();
                     chatData.setNickname(my_nickname);
                     chatData.setContent(msg);
                     chatData.setTime(curTime);
@@ -102,9 +91,8 @@ public class FragmentChat extends Fragment {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    chatData.setRead_status(document.get("read_status").toString());
+                                    chatData.setRead_status(document.get(userID).toString());
                                     Log.d(TAG, "read Value : " + chatData.getRead_status());
-
                                 } else {
                                     Log.d(TAG, "No such document");
                                 }
@@ -122,24 +110,30 @@ public class FragmentChat extends Fragment {
 //                    나중에 수정!!!!
                     db.collection("chat").document("2").collection("message").document(curTime).set(chatData);//firestore 에 데이터 저장
 //                     나중에 document "2" -> nickname 으로 수정!!
+                    Map<String, Object> recent_chat = new HashMap<String, Object>();
+                    recent_chat.put("from", my_nickname);
+                    recent_chat.put("content", msg);
+                    recent_chat.put("curTime", curTime);
+                    db.collection("chat").document("2").collection("recent_chat").document("recent_chat").set(recent_chat);
+
                     ((ChatAdatper) mAdapter).addChat(chatData);//어댑터 데이터 전달
                     mAdapter.notifyDataSetChanged();//업데이트
-
-
+                    mRecyclerView.scrollToPosition(chatDataList.size() - 1);
+                    Log.d(TAG, "chatDataList.size() is : " + String.valueOf(chatDataList.size() - 1));
+                    Log.d(TAG, "chatDataList.size.get : " + chatDataList.get(chatDataList.size() - 1).getContent());
                     Map<String, Object> map = new HashMap<>();
                     Timestamp timestamp = Timestamp.now();
                     map.put("dateExample", timestamp);
                     Timestamp.now().toDate();
 
-                    Log.d(TAG,"TimeStamp is : " + timestamp);
+                    Log.d(TAG, "TimeStamp is : " + timestamp);
                     db.collection("chat").document("2").collection("serverTimestamp").document(timestamp.toString()).set(map);
                     Log.d(TAG, "Server TimeStamp : " + timestamp.getNanoseconds() / 1000000);
                     Log.d(TAG, "Server TimeStamp to Date() : " + Timestamp.now().toDate());
                     db.collection("chat").document("2").collection("serverTimestamp").document(Timestamp.now().toDate().toString()).set(map);
-                    db.collection("chat").document("2").collection("serverTimestamp").document(Timestamp.now().toDate().toString()).set(map);
                     Map<String, Object> update = new HashMap<>();
                     update.put("timestamp", FieldValue.serverTimestamp());
-                    Log.d(TAG,"update : " + update.get("timestamp"));
+                    Log.d(TAG, "update : " + update.get("timestamp"));
                     db.collection("chat").document("2").collection("serverTimestamp")
                             .document(FieldValue.serverTimestamp().toString()).set(update);
                     editText_chat.setText("");
@@ -173,7 +167,7 @@ public class FragmentChat extends Fragment {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    read_status_Q[0] = document.get("read_status").toString();
+                                    read_status_Q[0] = String.valueOf(document.get(userID));
                                 } else {
                                     Log.d(TAG, "No such document");
                                 }
@@ -196,6 +190,7 @@ public class FragmentChat extends Fragment {
                 } else {
                     Log.d(TAG, "Error");
                 }
+                mRecyclerView.scrollToPosition(chatDataList.size());
             }
         });
 
@@ -207,9 +202,64 @@ public class FragmentChat extends Fragment {
         Log.d(TAG, "when this code run : ");
         mAdapter = new ChatAdatper(chatDataList, getActivity().getApplicationContext(), my_nickname, curTime);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.scrollToPosition(chatDataList.size() - 1);
 
+//        mRecyclerView.scrollToPosition(20);
+        Log.d(TAG, "chatDataList.size() : " + String.valueOf(chatDataList.size()));
         return rootview;
     }
 
+    private void getChatList() {
+        final String[] recentTime = new String[1];
+        DocumentReference documentReference = docRef.collection("recent_chat").document("recent_chat");
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "getInstanceId failed", task.getException());
+                } else if (task.getResult().get("curTime") != null) {
+                    recentTime[0] = String.valueOf(task.getResult().get("curTime"));
+                    Log.d(TAG, "recentTIme : " + recentTime[0]);
+                } else {
+                    Log.d(TAG, "null");
+                }
+            }
+        });
+        Log.d(TAG, "??");
+        colRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+//                    Log.d(TAG, recentTime[0]);
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        ChatData chatData = new ChatData();
+
+                        if (documentSnapshot.getId().equals(recentTime[0])) {
+                            Log.d(TAG, "curTIme is ; " + recentTime[0]);
+                            Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
+                            break;
+
+                        }
+                        chatData.setNickname(String.valueOf(documentSnapshot.getData().get("nickname")));
+                        chatData.setChat_time(String.valueOf(documentSnapshot.getData().get("chat_time")));
+                        chatData.setContent(String.valueOf(documentSnapshot.getData().get("content")));
+                        ((ChatAdatper) mAdapter).addChat(chatData);//어댑터 데이터 전달
+                        mAdapter.notifyDataSetChanged();//업데이트
+                        Log.d(TAG, "size" + (chatDataList.size()));
+
+//                        Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
+                    }
+                    mRecyclerView.scrollToPosition(chatDataList.size() - 1);
+
+
+                }
+            }
+        });
+
+
+    }
 
 }
+
+
+

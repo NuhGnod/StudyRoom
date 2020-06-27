@@ -1,4 +1,4 @@
-package com.example.studyroom;
+package com.example.studyroom.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

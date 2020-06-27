@@ -1,21 +1,19 @@
-package com.example.studyroom;
+package com.example.studyroom.Fragment;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.example.studyroom.R;
+
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class ChatAdatper extends RecyclerView.Adapter<ChatAdatper.MyViewHolder> {
     private List<ChatData> mDataset;

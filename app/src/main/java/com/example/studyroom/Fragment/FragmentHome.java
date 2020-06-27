@@ -1,4 +1,4 @@
-package com.example.studyroom;
+package com.example.studyroom.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.studyroom.LoginActivity;
+import com.example.studyroom.R;
+import com.example.studyroom.seatActivity;
 import com.readystatesoftware.viewbadger.BadgeView;
 
 //import static android.content.Context.MODE_PRIVATE;

@@ -1,6 +1,5 @@
 package com.example.studyroom;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,14 +23,17 @@ import android.view.ViewTreeObserver;
 
 import android.widget.Toast;
 
+import com.example.studyroom.Fragment.FragmentChat;
+import com.example.studyroom.Fragment.FragmentHome;
+import com.example.studyroom.Fragment.FragmentMyPage;
+import com.example.studyroom.Fragment.FragmentSearch;
+import com.example.studyroom.Utility.BackPressCloseHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -39,7 +41,6 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -82,33 +83,19 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         switchFragmentChat_FCM(extras, transaction);
-
-        bottomNavigationView = findViewById(R.id.navigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
-        bottomNavigationView.getOrCreateBadge(R.id.chat).setNumber(1);
-        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (curID == R.id.chat) {
-                    int mRootViewHeight = layout.getRootView().getHeight();
-                    int mRelativeWrapperHeight = layout.getHeight();
-                    int mDiff = mRootViewHeight - mRelativeWrapperHeight;
-
-                    if (mDiff > dpTOPx(200)) {
-//                        Toast.makeText(getApplicationContext(), "키보드가 위로 올라왔습니다.", Toast.LENGTH_LONG).show();
-                        bottomNavigationView.setVisibility(View.GONE);
-                    } else {
-//                            Toast.makeText(getApplicationContext(), "키보드가 내려갔습니다.", Toast.LENGTH_LONG).show();
-                        bottomNavigationView.setVisibility(View.VISIBLE);
-
-                    }
-                }
-            }
-        });
+        detectKeyboardUpDown();
+        updateToken();
 
         SharedPreferences pref = getSharedPreferences("userID", Context.MODE_PRIVATE);
         userID = pref.getString("userID", null);
 
+        bottomNavigationView = findViewById(R.id.navigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
+        bottomNavigationView.getOrCreateBadge(R.id.chat).setNumber(1);
+
+    }
+
+    private void updateToken() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -124,24 +111,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        Log.d(TAG, "getActiveFragment : " + getActiveFragment());
+
     }
 
     private void getReadStatusFromFirestore() {
-        final String reading_time = "";
+        final String[] reading_time = {""};
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "getInstanceId failed", task.getException());
+                } else if (task.getResult().get("admin") != null) {
+                    SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss:SS");
+                    reading_time[0] = SDF.format(new Date(System.currentTimeMillis()));
                 } else {
-                    if (task.getResult().get("admin") != null) {
-                        SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss:SS");
-                        reading_time = SDF.format(new Date(System.currentTimeMillis()));
-                    } else {
 
-                    }
                 }
+
             }
         });
     }
@@ -175,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Fragment Home");
                 transaction.commit();
                 map.clear();
-                map.put("read_status", "0");
+                map.put(userID, FieldValue.serverTimestamp());
                 docRef.set(map);
 
                 break;
@@ -192,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 transaction.addToBackStack("fragmentSearch");
                 transaction.commit();
                 map.clear();
-                map.put("read_status", "0");
+                map.put(userID, FieldValue.serverTimestamp());
                 docRef.set(map);
 
                 break;
@@ -209,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 transaction.addToBackStack("fragmentChat");
                 transaction.commit();
                 map.clear();
-                map.put("read_status", userID);
+                map.put(userID, FieldValue.serverTimestamp());
                 docRef.set(map);
                 break;
             case R.id.my_page:
@@ -224,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 transaction.addToBackStack("fragmentMyPage");
                 transaction.commit();
                 map.clear();
-                map.put("read_status", "0");
+                map.put(userID, FieldValue.serverTimestamp());
                 docRef.set(map);
                 break;
         }
@@ -241,6 +227,28 @@ public class MainActivity extends AppCompatActivity {
     private float dpTOPx(float i) {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, metrics);
+    }
+
+    private void detectKeyboardUpDown() {
+        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (curID == R.id.chat) {
+                    int mRootViewHeight = layout.getRootView().getHeight();
+                    int mRelativeWrapperHeight = layout.getHeight();
+                    int mDiff = mRootViewHeight - mRelativeWrapperHeight;
+
+                    if (mDiff > dpTOPx(200)) {
+//                        Toast.makeText(getApplicationContext(), "키보드가 위로 올라왔습니다.", Toast.LENGTH_LONG).show();
+                        bottomNavigationView.setVisibility(View.GONE);
+                    } else {
+//                            Toast.makeText(getApplicationContext(), "키보드가 내려갔습니다.", Toast.LENGTH_LONG).show();
+                        bottomNavigationView.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            }
+        });
     }
 
     @Override
