@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView find_pw;
     boolean id_count = false;
     boolean pw_count = false;
+
     FirebaseFirestore db;
 
     @Override
@@ -55,6 +56,21 @@ public class LoginActivity extends AppCompatActivity {
         login_button.setClickable(false);
         find_id = findViewById(R.id.find_id_textview);
         find_pw = findViewById(R.id.find_pw_textview);
+
+        find_pw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickFindTextview(v.getId());
+                Log.d(TAG, "find_pw id is : " + v.getId());
+            }
+        });
+        find_id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickFindTextview(v.getId());
+            }
+        });
+
 //        View target = findViewById(R.id.login_button);
 //        BadgeView badgeView = new BadgeView(this, target);
 //        badgeView.setText("1");
@@ -163,10 +179,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void clickFindTextview(int id) {
+        Intent intent = new Intent();
         if (id == R.id.find_id_textview) {
-
+            intent.setClass(getApplicationContext(), FindIdActivity.class);
         } else if (id == R.id.find_pw_textview) {
+            intent.setClass(getApplicationContext(), FindPwActivity.class);
         }
+        startActivity(intent);
+        LoginActivity.this.finish();
     }
 
     @Override

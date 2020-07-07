@@ -27,7 +27,9 @@
         <activity android:name=".FindIdActivity"
             android:theme="@style/FindIdTheme"/>
         <activity android:name=".CreateAccountActivity" />
+        <activity android:name=".FindPwActivity"/>
         <activity android:name=".LoginActivity" />
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyroom.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.LogDescriptor;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -70,11 +71,14 @@ public class FragmentChat extends Fragment {
 //        @@@나중에 document "2" -> nickname 으로 수정 해야함
         SharedPreferences pref1 = getActivity().getSharedPreferences("userID", Context.MODE_PRIVATE);
         userID = pref1.getString("userID", null);
+
         getChatList();
+
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "ServerTimeStamp : " + FieldValue.serverTimestamp());
+                Log.d(TAG, "size == " + chatDataList.size());
                 String msg = editText_chat.getText().toString();
                 SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd aa h:mm:ss:SS");
                 curTime = SDF.format(new Date(System.currentTimeMillis()));
@@ -205,7 +209,7 @@ public class FragmentChat extends Fragment {
         mRecyclerView.scrollToPosition(chatDataList.size() - 1);
 
 //        mRecyclerView.scrollToPosition(20);
-        Log.d(TAG, "chatDataList.size() : " + String.valueOf(chatDataList.size()));
+        Log.d(TAG, "chatDataList.size() : " + (chatDataList.size()));
         return rootview;
     }
 

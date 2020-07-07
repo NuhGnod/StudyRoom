@@ -39,58 +39,71 @@
         android:inputType="textPassword"
         android:paddingLeft="6dp" />
 
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/password_edittext"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/autoLogin_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/password_edittext"
-        android:layout_marginTop="22dp"
-        android:layout_toRightOf="@+id/checkbox"
-        android:text="자동 로그인"
-        android:textSize="16dp" />
-
-    <TextView
-        android:id="@+id/find_id_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/password_edittext"
-        android:layout_marginTop="22dp"
-        android:layout_marginRight="12dp"
-        android:layout_toLeftOf="@id/find_pw_textview"
-        android:text="아이디 찾기" />
-
-    <TextView
-        android:layout_width="2dp"
-        android:layout_height="16dp"
-        android:layout_below="@id/password_edittext"
-        android:layout_marginTop="24dp"
-        android:layout_toRightOf="@id/find_id_textview"
-        android:background="#A7A7A7" />
-
-    <TextView
-        android:id="@+id/find_pw_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/password_edittext"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="22dp"
+    <LinearLayout
         android:layout_marginRight="21dp"
-        android:text="비밀번호 찾기" />
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_edittext"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_edittext"
+             />
+
+        <TextView
+            android:id="@+id/autoLogin_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/password_edittext"
+
+            android:layout_toRightOf="@+id/checkbox"
+            android:text="자동 로그인"
+            android:layout_marginLeft="12dp"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/find_id_textview"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/password_edittext"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@id/find_pw_textview"
+            android:text="아이디 찾기" />
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="2dp"
+            android:layout_height="16dp"
+            android:layout_below="@id/password_edittext"
+            android:layout_toRightOf="@id/find_id_textview"
+            android:background="#A7A7A7" />
+
+        <Button
+            android:id="@+id/find_pw_textview"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/password_edittext"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="6dp"
+            android:text="비밀번호 찾기" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/autoLogin_textview"
+        android:layout_below="@id/layout"
         android:layout_marginLeft="21dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="21dp"
