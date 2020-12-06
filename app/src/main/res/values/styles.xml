@@ -6,7 +6,7 @@
         </item>
     </style>
 
-    <style name="FindIdTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="FindIdTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>

@@ -1,16 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FindIdActivity">
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="21dp"
+        android:background="@color/grey_300"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="아이디 찾기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginBottom="21dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="휴대전화 번호 입력"
+        android:textSize="24dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </TextView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <EditText
+            android:id="@+id/phoneNumberForCertify"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="6dp"
+            android:textSize="24dp"
+            android:layout_weight="7"
+            android:background="@drawable/login_edittext_border_layout"
+            android:hint="휴대전화 번호('-' 제외) " />
+
+        <Button
+            android:id="@+id/receive_certifyNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="21dp"
+            android:layout_weight="3"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="인증번호 받기" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/certifyNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="21dp"
+        android:textSize="24dp"
+        android:background="@drawable/login_edittext_border_layout"
+        android:hint="4자리 인증번호"
+        android:inputType="textPassword" />
+
+    <LinearLayout
+        android:id="@+id/create_account_next_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/next_textview_on_create_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:text="다음"
+            android:textSize="24dp" />
+
+        <ImageView
+            android:id="@+id/next_image_on_create_account"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/next_image" />
+    </LinearLayout>
+</LinearLayout>

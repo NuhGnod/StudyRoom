@@ -3,6 +3,8 @@ SharedPreferences :
     auto - auto_login_checkBox_boolean
     name - userName
 
+내부 파일에 채팅 내용저장
+    -> 보내는 이, 보낸 시간, 보낸 메시지, 읽음 여부,
 
 FireStore :
     chat (collection) -> userName (doc) -> message (collection) -> chat_content (random id, doc) -> content, nickname, time (field)

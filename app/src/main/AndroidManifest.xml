@@ -3,6 +3,11 @@
     package="com.example.studyroom">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
@@ -25,6 +30,7 @@
             </intent-filter>
         </service>
         <activity android:name=".FindIdActivity"
+
             android:theme="@style/FindIdTheme"/>
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".FindPwActivity"/>
